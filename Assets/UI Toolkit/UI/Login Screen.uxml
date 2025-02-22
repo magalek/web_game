@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:TextField label="Email" name="email_field" />
+    <ui:TextField label="Password" password="true" name="password_field" />
+    <ui:TextField label="Name" password="false" name="name_field" />
+    <ui:Label text="Label" name="character_label" style="-unity-text-align: upper-center;" />
+    <ui:Button text="Login" name="login_button" />
+</ui:UXML>
