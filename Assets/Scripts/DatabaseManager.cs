@@ -23,35 +23,51 @@ public class DatabaseManager : MonoBehaviour
 
     private async void Awake()
     {
-        Instance = this;
-        await Initialize();
-        Debug.Log("Initialized database connection.");
-        var name = "John Doe";
+        try
+        {
+            Instance = this;
+            await Initialize();
+            Debug.Log("Initialized database connection.");
+            var name = "John Doe";
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+            throw;
+        }
     }
 
     public async Task<string> SignIn(string email, string password, string name)
     {
-        await SignIn(email, password);
-
-        var result = await supabaseClient.From<Player>().Get();
-
-        if (result.Model == null)
+        try
         {
-            await DatabaseManager.Instance.AddPlayerRecord(new DatabaseManager.Player
-            {
-                User = supabaseSession.User.Id,
-                Name = name,
-                Coins = 0,
-                Level = 1
-            });
+            await SignIn(email, password);
 
-            Debug.Log($"Created new user {name}");
+            var result = await supabaseClient.From<Player>().Get();
+
+            if (result.Model == null)
+            {
+                await Instance.AddPlayerRecord(new Player
+                {
+                    User = supabaseSession.User.Id,
+                    Name = name,
+                    Coins = 0,
+                    Level = 1
+                });
+
+                Debug.Log($"Created new user {name}");
+                return supabaseSession.User.Id;
+            }
+
+            Debug.Log(result.Model.Name);
+            // await LogPlayers();
             return supabaseSession.User.Id;
         }
-        
-        Debug.Log(result.Model.Name);
-        // await LogPlayers();
-        return supabaseSession.User.Id;
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+            throw;
+        }
     }
 
     public async Task Initialize()

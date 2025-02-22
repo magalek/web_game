@@ -27,22 +27,30 @@ public class LoginController : MonoBehaviour
 
     private async Task Signup()
     {
-        var email = document.rootVisualElement.Q<TextField>("email_field").value;
-        var password = document.rootVisualElement.Q<TextField>("password_field").value;
-        var name = document.rootVisualElement.Q<TextField>("name_field").value;
-        
-        actions.Enqueue(() => PlayerPrefs.SetString("username", email));
-        actions.Enqueue(() => PlayerPrefs.SetString("password", password));
-        actions.Enqueue(() => PlayerPrefs.SetString("name", name));
-        
-        var id = await DatabaseManager.Instance.SignIn(email, password, name);
-
-        actions.Enqueue(() =>
+        try
         {
-            var label = document.rootVisualElement.Q<Label>("character_label");
-            label.text = id;
-        });
+            var email = document.rootVisualElement.Q<TextField>("email_field").value;
+            var password = document.rootVisualElement.Q<TextField>("password_field").value;
+            var name = document.rootVisualElement.Q<TextField>("name_field").value;
+        
+            actions.Enqueue(() => PlayerPrefs.SetString("username", email));
+            actions.Enqueue(() => PlayerPrefs.SetString("password", password));
+            actions.Enqueue(() => PlayerPrefs.SetString("name", name));
+        
+            var id = await DatabaseManager.Instance.SignIn(email, password, name);
 
+            actions.Enqueue(() =>
+            {
+                var label = document.rootVisualElement.Q<Label>("character_label");
+                label.text = id;
+            });
+
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+            throw;
+        }
     }
 
     // Update is called once per frame
